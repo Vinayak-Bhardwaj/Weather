@@ -30,6 +30,7 @@ class _SignInState extends State<SignIn> {
   String phoneNo;
   String smsCode;
   String verificationId;
+  bool obscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -60,14 +61,14 @@ class _SignInState extends State<SignIn> {
                     elevation: 0,
                     // elevation removes the shadow under the action bar
                     title: Text(
-                      "LOGIN", style: TextStyle(fontWeight: FontWeight.bold),),
+                      "LOGIN", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30)),
                     centerTitle: true,
                     leading: Icon(Icons.arrow_back),
                     // Actions are identified as buttons which are added at the right of App Bar
                     actions: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Image.asset('assets/logo.png'),
+                        child: FlutterLogo(size: 50),
                       )
                     ],
                   ),
@@ -108,16 +109,27 @@ class _SignInState extends State<SignIn> {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(18.0),
-                            child: TextFormField(
-                                decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.lock),
-                                    labelText: 'Password',
-                                    suffixIcon: Icon(Icons.remove_red_eye)),
-                                validator: (val) => val.length < 6 ? 'Enter a password 6+ chars long' : null,
-                                obscureText: true,
-                                onChanged: (val){
-                                  setState(() => password = val);
-                                }
+                            child: Container(
+                              child: TextFormField(
+                                  obscureText: obscure,
+                                  decoration: InputDecoration(
+                                      prefixIcon: Icon(Icons.lock),
+                                      labelText: 'Password',
+                                      suffixIcon: GestureDetector(
+                                        onTap: () => setState(() {
+                                          obscure = !obscure;
+                                        }),
+                                        child: obscure
+                                            ? Icon(Icons.visibility)
+                                            : Icon(Icons.visibility_off),
+                                      ),
+
+                                  ),
+                                  validator: (val) => val.length < 6 ? 'Enter a password 6+ chars long' : null,
+                                  onChanged: (val){
+                                    setState(() => password = val);
+                                  }
+                              ),
                             ),
                           ),
                           Container(
@@ -239,40 +251,43 @@ class _SignInState extends State<SignIn> {
                             children: <Widget>[
 
 
-                      OutlineButton(
-                        splashColor: Colors.grey,
-                        onPressed: () async {
-                          signInWithGoogle().whenComplete(() {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return Wrapper();
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: OutlineButton(
+                                splashColor: Colors.grey,
+                                onPressed: () async {
+                                  signInWithGoogle().whenComplete(() {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return Wrapper();
+                                        },
+                                      ),
+                                    );
+                                  });
                                 },
-                              ),
-                            );
-                          });
-                        },
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-                        highlightElevation: 0,
-                        borderSide: BorderSide(color: Colors.grey),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Image(image: AssetImage('assets/g_plus_icon.png'), height: 35.0),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text(
-                                  'Sign in with Google',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.grey,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                          highlightElevation: 0,
+                          borderSide: BorderSide(color: Colors.grey),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Image(image: AssetImage('assets/g_plus_icon.png'), height: 35.0),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    'Sign in with Google',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.grey,
+                                    ),
                                   ),
-                                ),
-                              )
-                            ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -300,12 +315,12 @@ class _SignInState extends State<SignIn> {
                         text: TextSpan(
                           text: "Don't have an account? ",
                           style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                              color: Colors.white, fontWeight: FontWeight.bold,fontSize:18),
                           children: <TextSpan>[
                             TextSpan(
                               text: "Click here to signup",
                               style:
-                              TextStyle(decoration: TextDecoration.underline),
+                              TextStyle(decoration: TextDecoration.underline,fontSize:18),
                             )
                           ],
                         ),

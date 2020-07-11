@@ -1,6 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:weather/models/user.dart';
+import 'package:weather/services/database.dart';
+
+User _userFromFirebaseUser(FirebaseUser user){
+  return user != null ? User(uid: user.uid):null;
+}
+
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -24,7 +30,8 @@ Future<String> signInWithGoogle() async {
   final FirebaseUser currentUser = await _auth.currentUser();
   assert(user.uid == currentUser.uid);
 
-  return 'signInWithGoogle succeeded: $user';
+
+  return 'signInWithGoogle succeeded: $_userFromFirebaseUser(user)';
 }
 
 void signOutGoogle() async{
@@ -39,9 +46,7 @@ class AuthService {
   final FirebaseAuth _auth=FirebaseAuth.instance;
 
   // create user obj based on FirebaseUser
-  User _userFromFirebaseUser(FirebaseUser user){
-    return user != null ? User(uid: user.uid):null;
-  }
+
 
   //auth change user stream
   Stream<User> get user{
@@ -80,6 +85,10 @@ class AuthService {
     try{
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
+
+      // create a new document for the user with the uid
+      await DatabaseService(uid: user.uid).updateUserData('Vinayak', '1234567890', 'New Delhi');
+      
       return _userFromFirebaseUser(user);
     }catch(e){
       print(e.toString());

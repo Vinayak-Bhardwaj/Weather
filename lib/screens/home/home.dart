@@ -1,18 +1,28 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:weather/WeatherResponse.dart';
+import 'package:weather/models/user.dart';
+import 'package:weather/screens/authenticate/register.dart';
+import 'package:weather/screens/home/Profile.dart';
 import 'package:weather/services/auth.dart';
 
 const API_KEY = '728c16fd6658cfc073d9fdf63b04acb9';
 
+class Home extends StatefulWidget {
 
-class Home extends StatelessWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
 
+class _HomeState extends State<Home> {
+  final Register _obj = Register();
 
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
@@ -56,6 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
 
 
@@ -98,7 +109,52 @@ class _MyHomePageState extends State<MyHomePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     //child: Image.asset('assets/logo.png'),
-                  )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: OutlineButton(
+                      splashColor: Colors.white,
+                      focusColor: Colors.white,
+                      color: Colors.white,
+                      highlightColor:Colors.white,
+                      hoverColor: Colors.white,
+                      textColor: Colors.white,
+                      onPressed: () async {
+
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return Profile();
+                            },
+                          ),
+                        );
+
+                      },
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+                      highlightElevation: 0,
+                      borderSide: BorderSide(color: Colors.transparent),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            //Image(image: AssetImage('assets/g_plus_icon.png'), height: 35.0),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: Text(
+                                'Profile',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
 
@@ -316,3 +372,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
