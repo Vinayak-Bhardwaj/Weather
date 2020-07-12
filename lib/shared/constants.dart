@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:weather/screens/authenticate/sign_in.dart';
+
+final SignIn image = SignIn();
 
 const textInputDecoration = InputDecoration(
   enabledBorder: OutlineInputBorder(

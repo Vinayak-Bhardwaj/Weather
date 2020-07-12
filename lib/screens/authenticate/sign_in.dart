@@ -7,11 +7,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+int img = 1;
+
+
 class SignIn extends StatefulWidget {
 
-  final Function toggleView;
+  final toggleView;
 
   SignIn({ this.toggleView});
+
 
   @override
   _SignInState createState() => _SignInState();
@@ -23,6 +27,7 @@ class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
 
+
   //text field state
   String email = '';
   String password = '';
@@ -32,8 +37,86 @@ class _SignInState extends State<SignIn> {
   String verificationId;
   bool obscure = true;
 
+
   @override
   Widget build(BuildContext context) {
+
+    void _showSettingsPanel() {
+      showModalBottomSheet(context: context,builder: (context) {
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 60.0),
+          child: Column(
+            children: <Widget>[
+              Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: RichText(
+                      text: TextSpan(
+                        text: 'Select Your Spirit',
+                        style: TextStyle(
+                          color: Colors.orange,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                          decoration: TextDecoration.underline,
+                        ),
+                      )
+                  )
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: RaisedButton(
+                    color: Colors.lightBlueAccent,
+                    onPressed: () {
+                      setState(() {
+                        img = 1;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: RichText(
+                        text: TextSpan(
+                          text: '1)   Morning',
+                          style: TextStyle(
+                            color: Colors.yellow,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.normal,
+                          ),
+                        )
+                    )
+                ),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: RaisedButton(
+                    color: Colors.black,
+                    onPressed: () {
+                      setState(() {
+                        img = 2;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: RichText(
+                        text: TextSpan(
+                          text: '2)   Night',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.normal,
+                          ),
+                        )
+                    )
+                ),
+              )
+
+            ],
+          )
+        );
+      });
+    }
+
     return loading ? Loading() : Scaffold(
       // SingleChildScrollView makes the UI not to overflow from bottom when TextField is used or different device is used
         body: SingleChildScrollView(
@@ -42,6 +125,10 @@ class _SignInState extends State<SignIn> {
             height: MediaQuery.of(context).size.height,
             decoration: BoxDecoration(
               // Adding Linear Gradient to the background of UI
+              image: DecorationImage(
+                image: (img == 1) ? AssetImage('assets/Morning.png'):AssetImage('assets/Night.png'),
+                fit: BoxFit.cover,
+              ),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -63,8 +150,15 @@ class _SignInState extends State<SignIn> {
                     title: Text(
                       "LOGIN", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30)),
                     centerTitle: true,
-                    leading: Icon(Icons.arrow_back),
-                    // Actions are identified as buttons which are added at the right of App Bar
+                    leading: GestureDetector(
+                      onTap: () {
+                        _showSettingsPanel();
+                      },
+                      child: Icon(
+                        Icons.menu,
+                      ),
+                    ),
+
                     actions: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -132,29 +226,9 @@ class _SignInState extends State<SignIn> {
                               ),
                             ),
                           ),
+
                           Container(
-                            width: MediaQuery.of(context).size.width,
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 18.0),
-                              child: InkWell( // InkWell widget makes the widget clickable and provide call back for touch events
-                                onTap: () {
-                                  print("Forget Password tap");
-                                },
-                                child: Text(
-                                  'Forget Password?',
-                                  textAlign: TextAlign.end,
-                                  style: TextStyle(
-                                    color: Color(0xffFBB034),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
+                            margin: EdgeInsets.only(top: 5),
                             child: InkWell(
                               onTap: () {
                                 print("login using mobile number tap");
@@ -167,7 +241,7 @@ class _SignInState extends State<SignIn> {
                                   text: 'Login using ',
                                   children: <TextSpan>[
                                     TextSpan(
-                                      text: 'Mobile Number and OTP',
+                                      text: 'EMAIL AND PASSWORD',
                                       style: TextStyle(
                                         decoration: TextDecoration.underline,),
                                     )
@@ -252,7 +326,7 @@ class _SignInState extends State<SignIn> {
 
 
                             Padding(
-                              padding: const EdgeInsets.all(15.0),
+                              padding: const EdgeInsets.all(5.0),
                               child: OutlineButton(
                                 splashColor: Colors.grey,
                                 onPressed: () async {
@@ -270,7 +344,7 @@ class _SignInState extends State<SignIn> {
                           highlightElevation: 0,
                           borderSide: BorderSide(color: Colors.grey),
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -293,19 +367,26 @@ class _SignInState extends State<SignIn> {
                       ),
 
 
+
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
 
 
                               ),
                             ],
+                          ),
+                          SizedBox(height: 15.0),
+                          Text(
+                            error,
+                            style: TextStyle(color : Colors.red, fontSize: 20.0,fontWeight: FontWeight.bold),
                           )
                         ],
+
                       ),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(18.0),
+                    padding: const EdgeInsets.all(5.0),
                     child: InkWell(
                       onTap: () {
                         widget.toggleView();
@@ -328,11 +409,7 @@ class _SignInState extends State<SignIn> {
 
                     ),
                   ),
-                  SizedBox(height: 12.0),
-                  Text(
-                    error,
-                    style: TextStyle(color : Colors.red, fontSize: 14.0),
-                  )
+
                 ],
               ),
             ),

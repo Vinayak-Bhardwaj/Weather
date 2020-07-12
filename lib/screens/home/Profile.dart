@@ -4,11 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weather/models/information.dart';
 import 'package:weather/models/user.dart';
+import 'package:weather/screens/authenticate/sign_in.dart';
 import 'package:weather/screens/home/home.dart';
 import 'package:weather/screens/home/list.dart';
 import 'package:weather/screens/home/settings_forms.dart';
 import 'package:weather/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:weather/shared/constants.dart';
+
+
+
 
 
 class Profile extends StatefulWidget {
@@ -19,6 +24,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+
+
 
 
   @override
@@ -42,6 +49,10 @@ class _ProfileState extends State<Profile> {
               child: Container(
                 height: MediaQuery.of(context).size.height,
                 decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: (img == 1) ? AssetImage('assets/Morning.png'):AssetImage('assets/Night.png'),
+                      fit: BoxFit.cover,
+                    ),
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -74,8 +85,11 @@ class _ProfileState extends State<Profile> {
                       ),
                       actions: <Widget>[
                         FlatButton.icon(
+                          color: Colors.transparent,
                           icon: Icon(Icons.settings),
-                          label: Text('Settings'),
+                          label: Text('Settings',
+                          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                          ),
                           onPressed: () => _showSettingsPanel(),
                         )
                       ],
@@ -84,6 +98,7 @@ class _ProfileState extends State<Profile> {
                     Container(
                       child: list(),
                     ),
+
                   ],
                 ),
               )

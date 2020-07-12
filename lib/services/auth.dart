@@ -7,6 +7,12 @@ User _userFromFirebaseUser(FirebaseUser user){
   return user != null ? User(uid: user.uid):null;
 }
 
+// create a new document for the user with the uid
+Future update(User user,String name,String phone,String city,String email_same) async {
+  // create a new document for the user with the uid
+  await DatabaseService(uid: user.uid).updateUserData(name, phone, city,email_same);
+}
+
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -31,6 +37,7 @@ Future<String> signInWithGoogle() async {
   assert(user.uid == currentUser.uid);
 
 
+  update(_userFromFirebaseUser(user),user.displayName, 'Update Phone No.', 'Update City.',user.email);
   return 'signInWithGoogle succeeded: $_userFromFirebaseUser(user)';
 }
 
@@ -86,9 +93,7 @@ class AuthService {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
 
-      // create a new document for the user with the uid
-      await DatabaseService(uid: user.uid).updateUserData('Vinayak', '1234567890', 'New Delhi');
-      
+
       return _userFromFirebaseUser(user);
     }catch(e){
       print(e.toString());

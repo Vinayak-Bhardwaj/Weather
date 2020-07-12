@@ -1,8 +1,10 @@
 import 'package:provider/provider.dart';
 import 'package:weather/models/user.dart';
+import 'package:weather/screens/authenticate/sign_in.dart';
 import 'package:weather/screens/home/home.dart';
 import 'package:weather/screens/wrapper.dart';
 import 'package:weather/services/auth.dart';
+import 'package:weather/services/database.dart';
 import 'package:weather/shared/constants.dart';
 import 'package:weather/shared/loading.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +34,12 @@ class _RegisterState extends State<Register> {
   String phone='';
   String msg='';
   bool obscure = true;
+  String city='';
+  // create a new document for the user with the uid
+  Future update(User user,String name,String phone,String city,String email_same) async {
+    // create a new document for the user with the uid
+    await DatabaseService(uid: user.uid).updateUserData(name, phone, city,email_same);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +51,10 @@ class _RegisterState extends State<Register> {
           height: MediaQuery.of(context).size.height,
 
           decoration: BoxDecoration(
+              image: DecorationImage(
+                image: (img == 1) ? AssetImage('assets/Morning.png'):AssetImage('assets/Night.png'),
+                fit: BoxFit.cover,
+              ),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -81,8 +93,8 @@ class _RegisterState extends State<Register> {
 
               Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(top: 10,bottom: 0),
-                margin: EdgeInsets.only(top: 10,left: 20,right: 20),
+                padding: EdgeInsets.only(top: 5,bottom: 0),
+                margin: EdgeInsets.only(top: 0,left: 20,right: 20,bottom:0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
@@ -92,7 +104,7 @@ class _RegisterState extends State<Register> {
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: TextFormField(
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.person),
@@ -108,7 +120,7 @@ class _RegisterState extends State<Register> {
 
 
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: TextFormField(
                             decoration: InputDecoration(
                               prefixIcon: Icon(Icons.email),
@@ -121,10 +133,10 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: TextFormField(
                             decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.flag),
+                              prefixIcon: Icon(Icons.phone),
                               hintText: 'Phone Number',
                             ),
                             validator: (val) => phone.length < 10 ? 'Enter Correct Phone number' : null,
@@ -133,8 +145,24 @@ class _RegisterState extends State<Register> {
                             }
                         ),
                       ),
+
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(5.0),
+                        child: TextFormField(
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.location_city),
+                              hintText: 'City For eg New Delhi,Bikaner,Jaipur',
+                            ),
+                            validator: (val) => city.isEmpty ? 'Enter Your City' : null,
+                            onChanged: (val){
+                              setState(() => city = val,
+                              );
+                            }
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
                         child: TextFormField(
                             obscureText: obscure,
                             decoration: InputDecoration(
@@ -158,7 +186,7 @@ class _RegisterState extends State<Register> {
                       ),
 
                       Padding(
-                        padding: const EdgeInsets.all(10.0),
+                        padding: const EdgeInsets.all(5.0),
                         child: TextFormField(
                             obscureText: obscure,
                             decoration: InputDecoration(
@@ -192,7 +220,6 @@ class _RegisterState extends State<Register> {
                       ),
 
 
-
                       OutlineButton(
                         splashColor: Color(0xffFBB034),
                         focusColor: Color(0xffFBB034),
@@ -204,6 +231,7 @@ class _RegisterState extends State<Register> {
                           if(_formKey.currentState.validate()){
                             setState(() => loading = true);
                             dynamic result = await _auth.registerWithEmailAndPassword(email, password);
+                            update(result,name, phone, city,email);
                             if(result == null){
                               setState(() {
                                 error = 'please supply a valid email';
@@ -251,7 +279,7 @@ class _RegisterState extends State<Register> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(1.0),
+                              padding: const EdgeInsets.all(0.0),
                               child: Text(
                                 "Register with Social Media",
                                 style: TextStyle(
@@ -263,7 +291,7 @@ class _RegisterState extends State<Register> {
                           ]
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(15.0),
+                        padding: const EdgeInsets.only(top: 5),
                         child: OutlineButton(
                           splashColor: Colors.grey,
                           onPressed: () async {
@@ -281,7 +309,7 @@ class _RegisterState extends State<Register> {
                           highlightElevation: 0,
                           borderSide: BorderSide(color: Colors.grey),
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -302,7 +330,7 @@ class _RegisterState extends State<Register> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 12.0),
+                      SizedBox(height: 10.0),
                       Text(
                           msg.isEmpty?error:msg,
                           style: msg.isEmpty?TextStyle(color : Colors.red, fontSize: 20.0,fontWeight: FontWeight.bold):TextStyle(color : Colors.green, fontSize: 20.0,fontWeight: FontWeight.bold),

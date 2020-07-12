@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:weather/WeatherResponse.dart';
 import 'package:weather/models/user.dart';
 import 'package:weather/screens/authenticate/register.dart';
+import 'package:weather/screens/authenticate/sign_in.dart';
 import 'package:weather/screens/home/Profile.dart';
 import 'package:weather/services/auth.dart';
+import 'package:weather/shared/constants.dart';
 
 const API_KEY = '728c16fd6658cfc073d9fdf63b04acb9';
 
@@ -17,7 +19,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final Register _obj = Register();
+
 
 
   @override
@@ -30,7 +32,7 @@ class _HomeState extends State<Home> {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Whether App'),
+      home: MyHomePage(title: 'Weather App'),
     );
   }
 }
@@ -77,6 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
           height: MediaQuery.of(context).size.height,
 
           decoration: BoxDecoration(
+              image: DecorationImage(
+                image: (img == 1) ? AssetImage('assets/Morning.png'):AssetImage('assets/Night.png'),
+                fit: BoxFit.cover,
+              ),
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -164,6 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: EdgeInsets.only(top: 10,bottom: 15),
                 margin: EdgeInsets.only(top: 50,left: 20,right: 20,bottom: 30),
                 decoration: BoxDecoration(
+
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                 ),
