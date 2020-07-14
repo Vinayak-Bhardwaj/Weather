@@ -7,6 +7,7 @@ import 'package:weather/models/information.dart';
 import 'package:weather/WeatherResponse.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 const API_KEY = '728c16fd6658cfc073d9fdf63b04acb9';
 
@@ -31,17 +32,54 @@ class _listState extends State<list> {
 
   }
 
+  String readTimestamp(int timestamp) {
+    var now = DateTime.now();
+    var format = DateFormat('HH:mm a');
+    var date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    var diff = now.difference(date);
+    var time = '';
+
+    if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
+      time = format.format(date);
+    } else if (diff.inDays > 0 && diff.inDays < 7) {
+      if (diff.inDays == 1) {
+        time = diff.inDays.toString() + ' DAY AGO';
+      } else {
+        time = diff.inDays.toString() + ' DAYS AGO';
+      }
+    } else {
+      if (diff.inDays == 7) {
+        time = (diff.inDays / 7).floor().toString() + ' WEEK AGO';
+      } else {
+
+        time = (diff.inDays / 7).floor().toString() + ' WEEKS AGO';
+      }
+    }
+
+    return time;
+  }
+
 
 
   @override
   Widget build(BuildContext context) {
 
+    MediaQueryData queryData;
+    queryData = MediaQuery.of(context);
+
+    double width = queryData.size.width;
+    double height = queryData.size.height;
+    var size = queryData.size;
+    print(width);
+    print(height);
+    print(size);
+
     final information = Provider.of<Information>(context);
 
     return information == null ? CircularProgressIndicator() : Container(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.only(top: 10,bottom: 0),
-      margin: EdgeInsets.only(top: 10,left: 20,right: 20),
+      padding: EdgeInsets.only(top: height/82.06,bottom: 0),
+      margin: EdgeInsets.only(top: height/82.06,left: width/20.57,right: width/20.57),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -57,12 +95,12 @@ class _listState extends State<list> {
                       text: 'Name : ',
                       style: TextStyle(
                           color: Colors.black,
-                          fontSize: 15
+                          fontSize: height/54.70
                       ),
                       children: <TextSpan>[
                         TextSpan(
                           text: '${information.name}',
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                         )
                       ]
                   )
@@ -75,12 +113,12 @@ class _listState extends State<list> {
                       text: 'Email Id : ',
                       style: TextStyle(
                           color: Colors.black,
-                          fontSize: 15
+                          fontSize: height/54.70
                       ),
                       children: <TextSpan>[
                         TextSpan(
                           text: '${information.email}',
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                         )
                       ]
                   )
@@ -93,12 +131,12 @@ class _listState extends State<list> {
                       text: 'Phone Number : ',
                       style: TextStyle(
                           color: Colors.black,
-                          fontSize: 15
+                          fontSize: height/54.70
                       ),
                       children: <TextSpan>[
                         TextSpan(
                           text: '${information.phone}',
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                         )
                       ]
                   )
@@ -112,12 +150,12 @@ class _listState extends State<list> {
                       text: 'City: ',
                       style: TextStyle(
                           color: Colors.black,
-                          fontSize: 15
+                          fontSize: height/54.70
                       ),
                       children: <TextSpan>[
                         TextSpan(
                           text: '${information.city}',
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                         )
                       ]
                   )
@@ -127,8 +165,8 @@ class _listState extends State<list> {
           weather_response != null ? Container(
 
             width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.only(top: 5,bottom: 5),
-            margin: EdgeInsets.only(top: 10,left: 10,right: 10,bottom: 10),
+            padding: EdgeInsets.only(top: height/164.12,bottom: height/164.12),
+            margin: EdgeInsets.only(top: height/82.06,left: width/41.14,right: width/41.14,bottom: height/82.06),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -142,7 +180,7 @@ class _listState extends State<list> {
                             text: '${information.city} Weather',
                             style: TextStyle(
                                 color: Colors.orange,
-                                fontSize: 30,
+                                fontSize: height/27.35,
                                 fontWeight: FontWeight.bold,
                                 fontStyle: FontStyle.italic,
                                 decoration: TextDecoration.underline,
@@ -157,12 +195,12 @@ class _listState extends State<list> {
                             text: 'Main : ',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15
+                                fontSize: height/54.70
                             ),
                             children: <TextSpan>[
                               TextSpan(
                                 text: '${weather_response.main}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                               )
                             ]
                         )
@@ -175,12 +213,12 @@ class _listState extends State<list> {
                             text: 'Description : ',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15
+                                fontSize: height/54.70
                             ),
                             children: <TextSpan>[
                               TextSpan(
                                 text: '${weather_response.description}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                               )
                             ]
                         )
@@ -193,12 +231,12 @@ class _listState extends State<list> {
                             text: 'Temperature : ',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15
+                                fontSize: height/54.70
                             ),
                             children: <TextSpan>[
                               TextSpan(
                                 text: '${weather_response.temperature.toString()}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                               )
                             ]
                         )
@@ -211,12 +249,12 @@ class _listState extends State<list> {
                             text: 'Feels Like : ',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15
+                                fontSize: height/54.70
                             ),
                             children: <TextSpan>[
                               TextSpan(
                                 text: '${weather_response.feels_like.toString()}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                               )
                             ]
                         )
@@ -229,12 +267,12 @@ class _listState extends State<list> {
                             text: 'Minimum Temperature : ',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15
+                                fontSize: height/54.70
                             ),
                             children: <TextSpan>[
                               TextSpan(
                                 text: '${weather_response.temp_min.toString()}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                               )
                             ]
                         )
@@ -247,12 +285,12 @@ class _listState extends State<list> {
                             text: 'Maximum Temperature : ',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15
+                                fontSize: height/54.70
                             ),
                             children: <TextSpan>[
                               TextSpan(
                                 text: '${weather_response.temp_max.toString()}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                               )
                             ]
                         )
@@ -265,12 +303,12 @@ class _listState extends State<list> {
                             text: 'Humidity : ',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15
+                                fontSize: height/54.70
                             ),
                             children: <TextSpan>[
                               TextSpan(
                                 text: "${weather_response.humidity.toString()}",
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                               )
                             ]
                         )
@@ -283,12 +321,12 @@ class _listState extends State<list> {
                             text: 'Sunrise : ',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15
+                                fontSize: height/54.70
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                text: '${weather_response.sunrise.toString()}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                text: '${readTimestamp(weather_response.sunrise)}',
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                               )
                             ]
                         )
@@ -301,12 +339,12 @@ class _listState extends State<list> {
                             text: 'Sunset : ',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15
+                                fontSize: height/54.70
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                text: '${weather_response.sunset.toString()}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                                text: '${readTimestamp(weather_response.sunset)}',
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: height/54.70),
                               )
                             ]
                         )
@@ -326,7 +364,7 @@ class _listState extends State<list> {
             },
             child:Text(
               "Get Your City's Weather Data",
-              style: TextStyle(color: Colors.white,fontSize: 20),
+              style: TextStyle(color: Colors.white,fontSize: height/41.03),
             ),
           ),
 
